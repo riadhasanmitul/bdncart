@@ -1,0 +1,6 @@
+// Auth module — Phase 2
+// Files to be created:
+//   auth.router.js     — HTTP routes
+//   auth.service.js    — Business logic (JWT, bcrypt, email verification)
+//   auth.repository.js — Database queries
+//   auth.validator.js  — Input validation rules

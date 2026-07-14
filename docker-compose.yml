@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: shopwave_postgres
+    environment:
+      POSTGRES_USER: shopwave_user
+      POSTGRES_PASSWORD: shopwave_pass
+      POSTGRES_DB: shopwave_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shopwave_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopwave_user -d shopwave_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: shopwave_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopwave_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: shopwave_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@shopwave.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - shopwave_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  shopwave_network:
+    driver: bridge
